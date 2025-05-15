@@ -1,13 +1,15 @@
 const express = require('express')
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const {Signup,Login} = require('./model/UserScehma');
+const Signup = require('./model/UserScehma');
 const {Questions,Answers} = require('./model/Questions')
+const mongoose = require('mongoose');
+const authMiddleware = require('./middleware/auth')
+require('dotenv').config();
+const jwt = require('jsonwebtoken')
 
 
-
-
-router.post('test/signup', async (req,res)=>{
+router.post('/test/signup', async (req,res)=>{
 
     try{
         const {email,password} = req.body;
@@ -54,14 +56,44 @@ router.post('/login',async(req,res)=>{
             return res.status(401).json({message:"Invalid Password"});
         }
 
-       
-        res.status(200).json({message:"Login successfull!"})
+        const token = jwt.sign({id:dataExist._id,email:dataExist.email},process.env.JWT_SECRET,{expiresIn:'1h'});
+        res.status(200).json({message:"Login successfull!",token})
+        
+
+
 
     }
     catch(err){
         res.status(500).json({error:err.message})
     }
 });
+
+
+
+router.post('/postQuestion',authMiddleware, async (req,res)=>{
+    const {question,tagline,category} = req.body;
+    try{
+    if(!question){
+        return res.status(400).json({
+            message:"Question not found!"
+        });
+    };
+    const allowedCategories = ['Python', 'Java', 'DSA', 'C++', 'JavaScript', 'SQL', 'Others'];
+    if (!allowedCategories.includes(category)) {
+  return res.status(400).json({ message: 'Invalid category selected' });
+}
+    const newData = await Questions.create({
+        question,tagline,category,posted_by:req.user.email
+    });
+    res.status(200).json({message:"Question added",newData})
+}
+catch(err){
+    return res.status(500).json({error:err.message});
+}
+})
+
+
+
 
 
 module.exports = router;

@@ -79,6 +79,40 @@ router.get('/allQuestions',async(req,res)=>{
     }
 });
 
+router.put('/updateQuestion/:id', authMiddleware, async (req, res) => {
+    const { id } = req.params;
+    const { question, tagline, category } = req.body;
+
+    const allowedCategories = ['Python', 'Java', 'DSA', 'C++', 'JavaScript', 'SQL', 'Others'];
+
+    try {
+       
+        if (category && !allowedCategories.includes(category)) {
+            return res.status(400).json({ message: 'Invalid category selected' });
+        }
+
+        
+        const existing = await Questions.findById(id);
+        if (!existing) {
+            return res.status(404).json({ message: 'Question not found' });
+        }
+
+        if (existing.posted_by !== req.user.email) {
+            return res.status(403).json({ message: 'Unauthorized to update this question' });
+        }
+
+    
+        const updatedQuestion = await Questions.findByIdAndUpdate(
+            id,
+            { question, tagline, category });
+
+        res.status(200).json({ message: 'Question updated successfully', updatedQuestion });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 
 
 router.post('/postQuestion',authMiddleware, async (req,res)=>{

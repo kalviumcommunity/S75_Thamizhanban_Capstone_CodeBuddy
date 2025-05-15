@@ -58,13 +58,24 @@ router.post('/login',async(req,res)=>{
 
         const token = jwt.sign({id:dataExist._id,email:dataExist.email},process.env.JWT_SECRET,{expiresIn:'1h'});
         res.status(200).json({message:"Login successfull!",token})
-        
-
-
 
     }
     catch(err){
         res.status(500).json({error:err.message})
+    }
+});
+
+
+router.get('/allQuestions',async(req,res)=>{
+    try{
+        const data = await Questions.find();
+        if(!data){
+            return res.status(400).json({message:"Data not found"});
+        }
+        res.status(200).json(data);
+    }
+    catch(err){
+        console.log("error:",err);
     }
 });
 

@@ -66,7 +66,7 @@ router.post('/login',async(req,res)=>{
 });
 
 
-router.get('/allQuestions',async(req,res)=>{
+router.get('/allQuestions',authMiddleware,async(req,res)=>{
     try{
         const data = await Questions.find();
         if(!data){
@@ -79,7 +79,7 @@ router.get('/allQuestions',async(req,res)=>{
     }
 });
 
-router.put('/updateQuestion/:id', authMiddleware, async (req, res) => {
+router.put('/updateQuestion/:id',authMiddleware, async (req, res) => {
     const { id } = req.params;
     const { question, tagline, category } = req.body;
 

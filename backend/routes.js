@@ -9,15 +9,15 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken')
 
 
-router.post('/test/signup', async (req,res)=>{
+router.post('/signup', async (req,res)=>{
 
     try{
-        const {email,password} = req.body;
+        const {uesrname,email,password} = req.body;
         if(!email||!password){
             return res.status(400).json({message:"All the data are required"});
         }
         const hashedPass = await bcrypt.hash(password,10);
-        const newData = await Signup.create({ email:email,
+        const newData = await Signup.create({ username:username,email:email,
             password:hashedPass})
         res.status(201).json({message:"Data created successfully!"
         });
@@ -45,7 +45,7 @@ router.get('/signup',async(req,res)=>{
 
 router.post('/login',async(req,res)=>{
     try{
-        const {email,password} = req.body;
+        const {username,email,password} = req.body;
         const dataExist = await Signup.findOne({email});
         if(!dataExist){
             return res.status(404).json({message:"No users found on this email"});

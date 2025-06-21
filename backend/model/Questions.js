@@ -8,7 +8,7 @@ const QuestionSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ['Python', 'Java', 'DSA', 'C++', 'JavaScript', 'SQL', 'Others'], 
+    enum: ['Python', 'Java', 'DSA', 'C++', 'JavaScript', 'SQL', 'Others'], // Optional, helps prevent typos
     required: true
   },
   tagline: {
@@ -23,26 +23,28 @@ const QuestionSchema = new mongoose.Schema({
 });
 
 const AnswerSchema = new mongoose.Schema({
-  Answers: [
+  answer: {
+    type: String,
+    required: true,
+  },
+question: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'Questions',  
+  required: true,
+},
+  ratings: [
     {
-      answer: {
-        type: String,
-        required: true,
-        unique:true,
-        minlength: 10
-        
-
-      }
+      user: String,
+      stars: Number,
     }
   ],
-  Question: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Questions',
+   author: {
+    type: String,
     required: true,
-    
-    
   }
 });
+
+
 
 const Questions = mongoose.model('Questions',QuestionSchema);
 const Answers = mongoose.model('Answers',AnswerSchema);

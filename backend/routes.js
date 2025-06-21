@@ -12,7 +12,7 @@ const jwt = require('jsonwebtoken')
 router.post('/signup', async (req,res)=>{
 
     try{
-        const {uesrname,email,password} = req.body;
+        const {username,email,password} = req.body;
         if(!email||!password){
             return res.status(400).json({message:"All the data are required"});
         }

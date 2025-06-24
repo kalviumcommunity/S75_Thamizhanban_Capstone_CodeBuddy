@@ -9,12 +9,12 @@ const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [showQuestionInput, setShowQuestionInput] = useState(false);
   const navigate = useNavigate();
-
+  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL
   const token = localStorage.getItem('token');
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/postedQuestions`, {
+      const response = await fetch(`${BACKEND_BASE_URL}/api/postedQuestions`, {
         method: 'GET',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -76,7 +76,7 @@ const Home = () => {
       <div className="container mx-auto px-4 py-20">
         <div className="flex flex-row gap-6 mt-10">
 
-          {/* Left: Ask a Question */}
+ 
           <div className="w-2/3 bg-white p-8 rounded-3xl shadow-md border border-gray-200 h-[600px] overflow-y-auto">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Ask your Questions and Doubts!</h2>
 
@@ -148,7 +148,7 @@ const Home = () => {
             )}
           </div>
 
-          {/* Right: Posted Questions */}
+
           <div className="w-1/3 bg-white p-6 rounded-3xl shadow-md border border-gray-200 h-[600px] overflow-y-auto">
             <div className="bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-semibold inline-block mb-6">
               Posted Questions – {questions.length}

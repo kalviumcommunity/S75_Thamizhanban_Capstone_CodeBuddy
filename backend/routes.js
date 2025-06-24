@@ -183,7 +183,7 @@ router.get('/myQuestions', authMiddleware, async (req, res) => {
 router.get('/myAnswers', authMiddleware, async (req, res) => {
   try {
     const answers = await Answers.find({ author: req.user.email })
-      .populate('question', 'question'); // Only populate the 'question' field from Question model
+      .populate('question', 'question'); 
     res.json(answers);
   } catch (err) {
     res.status(500).json({ message: err.message });

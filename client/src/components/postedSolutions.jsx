@@ -15,13 +15,14 @@ const PostedAnswers = () => {
   const userEmail = localStorage.getItem('email');
   const username = userEmail ? userEmail.split('@')[0] : 'Anonymous';
   const socket = useRef(null);
+  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL
 
   useEffect(() => {
-    socket.current = io('http://localhost:3000');
+    socket.current = io(`${BACKEND_BASE_URL}`);
 
     const fetchAnswers = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/allAnswers/${question._id}`);
+        const res = await fetch(`${BACKEND_BASE_URL}/api/allAnswers/${question._id}`);
         const data = await res.json();
         setAnswers(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -48,7 +49,7 @@ const PostedAnswers = () => {
 
   const fetchChatMessages = async (answerId) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/chat/${answerId}`);
+      const res = await fetch(`${BACKEND_BASE_URL}/api/chat/${answerId}`);
       const data = await res.json();
       setChatMessages(prev => ({ ...prev, [answerId]: data }));
     } catch (err) {
@@ -58,7 +59,7 @@ const PostedAnswers = () => {
 
   const handleRating = async (answerId, ratingValue) => {
     try {
-      await fetch(`http://localhost:3000/api/rate/${answerId}`, {
+      await fetch(`${BACKEND_BASE_URL}/api/rate/${answerId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rating: ratingValue })
@@ -107,7 +108,7 @@ const PostedAnswers = () => {
       }));
 
       try {
-        await fetch('http://localhost:3000/api/chat', {
+        await fetch(`${BACKEND_BASE_URL}/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newMessage)

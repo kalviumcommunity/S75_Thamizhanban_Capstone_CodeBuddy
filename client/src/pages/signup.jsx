@@ -11,12 +11,11 @@ import { useNavigate } from 'react-router-dom';
   const handlePassword = (e) => setPass(e.target.value);
 
   const handleLoginNav = () => navigate('/login');
-  
-
+  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/api/signup`, {
+      const response = await fetch(`${BACKEND_BASE_URL}/api/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

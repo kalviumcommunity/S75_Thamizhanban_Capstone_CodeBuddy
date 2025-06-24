@@ -9,10 +9,11 @@ const Problems = () => {
   const [questions, setQuestions] = useState([]);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/allQuestions', {
+      const response = await fetch(`${BACKEND_BASE_URL}/api/allQuestions`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,

@@ -15,14 +15,13 @@ const PostedAnswers = () => {
   const userEmail = localStorage.getItem('email');
   const username = userEmail ? userEmail.split('@')[0] : 'Anonymous';
   const socket = useRef(null);
-  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL
 
   useEffect(() => {
-    socket.current = io(`${BACKEND_BASE_URL}`);
+    socket.current = io(`https://codebuddy-4-78bo.onrender.com`);
 
     const fetchAnswers = async () => {
       try {
-        const res = await fetch(`${BACKEND_BASE_URL}/api/allAnswers/${question._id}`);
+        const res = await fetch(`https://codebuddy-4-78bo.onrender.com/api/allAnswers/${question._id}`);
         const data = await res.json();
         setAnswers(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -49,7 +48,7 @@ const PostedAnswers = () => {
 
   const fetchChatMessages = async (answerId) => {
     try {
-      const res = await fetch(`${BACKEND_BASE_URL}/api/chat/${answerId}`);
+      const res = await fetch(`https://codebuddy-4-78bo.onrender.com/api/chat/${answerId}`);
       const data = await res.json();
       setChatMessages(prev => ({ ...prev, [answerId]: data }));
     } catch (err) {
@@ -59,7 +58,7 @@ const PostedAnswers = () => {
 
   const handleRating = async (answerId, ratingValue) => {
     try {
-      await fetch(`${BACKEND_BASE_URL}/api/rate/${answerId}`, {
+      await fetch(`https://codebuddy-4-78bo.onrender.com/api/rate/${answerId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rating: ratingValue })
@@ -108,7 +107,7 @@ const PostedAnswers = () => {
       }));
 
       try {
-        await fetch(`${BACKEND_BASE_URL}/api/chat`, {
+        await fetch(`https://codebuddy-4-78bo.onrender.com/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newMessage)

@@ -9,12 +9,12 @@ const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [showQuestionInput, setShowQuestionInput] = useState(false);
   const navigate = useNavigate();
-  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL
+
   const token = localStorage.getItem('token');
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`${BACKEND_BASE_URL}/api/postedQuestions`, {
+      const response = await fetch(`https://codebuddy-4-78bo.onrender.com/api/postedQuestions`, {
         method: 'GET',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -36,7 +36,7 @@ const Home = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/postQuestion`, {
+      const response = await fetch(`https://codebuddy-4-78bo.onrender.com/api/postQuestion`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -2,7 +2,6 @@
 import React,{useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL
 
 const Login = () => {
 
@@ -29,7 +28,7 @@ const Login = () => {
         e.preventDefault();
 
         try{
-            const response = await fetch(`${BACKEND_BASE_URL}/api/login`,{
+            const response = await fetch('https://codebuddy-4-78bo.onrender.com/api/login',{
                 method:"POST",
                 headers:{"Content-Type":"application/json"},
                 body:JSON.stringify({email,password})
@@ -41,7 +40,7 @@ const Login = () => {
                 setMessage('Login Successful!')
                 localStorage.setItem('email',email);
                 setTimeout(()=>{
-                    navigate('/')
+                    navigate('/home')
                 },1000)
             
                 setEmail('')

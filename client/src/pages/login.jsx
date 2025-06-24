@@ -2,6 +2,8 @@
 import React,{useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL
+
 const Login = () => {
 
     const [email,setEmail] = useState('');
@@ -27,12 +29,12 @@ const Login = () => {
         e.preventDefault();
 
         try{
-            const response = await fetch(`http://localhost:3000/api/login`,{
+            const response = await fetch(`${BACKEND_BASE_URL}/api/login`,{
                 method:"POST",
                 headers:{"Content-Type":"application/json"},
                 body:JSON.stringify({email,password})
             });
-            
+
             const data = await  response.json();
             if(response.ok){
                 localStorage.setItem('token', data.token); 

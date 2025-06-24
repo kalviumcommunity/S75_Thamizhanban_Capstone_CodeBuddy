@@ -8,12 +8,12 @@ const PostAnswer = () => {
   const location = useLocation();
   const question = location.state?.question;
   const token = localStorage.getItem('token');
-
+  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL
   const postAnswer = async (e) => {
     e.preventDefault();
   
     try {
-      const response = await fetch('http://localhost:3000/api/postAnswer', {
+      const response = await fetch(`${BACKEND_BASE_URL}/api/postAnswer`, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",

@@ -6,14 +6,15 @@ const Profile = () => {
   const [answers, setAnswers] = useState([]);
   const email = localStorage.getItem('email');
   const token = localStorage.getItem('token');
+  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_URL
 
   useEffect(() => {
     const fetchData = async () => {
       const [qRes, aRes] = await Promise.all([
-        fetch('http://localhost:3000/api/myQuestions', {
+        fetch(`${BACKEND_BASE_URL}/api/myQuestions`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        fetch('http://localhost:3000/api/myAnswers', {
+        fetch(`${BACKEND_BASE_URL}/api/myAnswers`, {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);

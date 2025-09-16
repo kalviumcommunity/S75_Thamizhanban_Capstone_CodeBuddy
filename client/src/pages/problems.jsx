@@ -33,11 +33,14 @@ const Problems = () => {
     fetchData();
   }, []);
 
-  const filteredQuestions = questions.filter((q) => {
-    const matchesCategory = selectedCategory ? q.category === selectedCategory : true;
-    const matchesSearch = q.question.toLowerCase().includes(searchText.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+const filteredQuestions = questions.filter((q) => {
+  const matchesCategory = selectedCategory ? q.category === selectedCategory : true;
+  const matchesSearch = (q.question?.toLowerCase() || "").includes(
+    (searchText || "").toLowerCase()
+  );
+  return matchesCategory && matchesSearch;
+});
+
 
   const handlePostAnswer = (question) => {
     navigate('/postAnswer', { state: { question } });

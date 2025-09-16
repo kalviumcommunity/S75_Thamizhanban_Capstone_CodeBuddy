@@ -13,7 +13,7 @@ const Nav = () => {
 
       <ul className="flex gap-10 list-none">
         <li
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/home')}
           className="cursor-pointer relative text-lg font-medium text-gray-800 hover:text-pink-500 transition"
         >
           Home

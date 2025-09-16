@@ -24,7 +24,7 @@ import { useNavigate } from 'react-router-dom';
       if (response.ok) {
         setMessage('Signup Successful!');
         localStorage.setItem('token', data.token);
-        setTimeout(() => navigate('/'), 1000);
+        setTimeout(() => navigate('/home'), 1000);
         setEmail('');
         setPass('');
       } else {

@@ -10,6 +10,8 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 
+// CORS setup for local + Netlify
+
 app.use(cors({
   origin: ['http://localhost:5173', 'https://codebudd.netlify.app'],
   credentials: true

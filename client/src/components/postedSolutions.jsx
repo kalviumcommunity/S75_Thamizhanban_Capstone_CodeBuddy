@@ -1,12 +1,12 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Nav from './nav';
-import { FaStar } from 'react-icons/fa';
+import { Star, MessageCircle, Send, ChevronDown, ChevronUp, ArrowLeft, User } from 'lucide-react';
 import { io } from 'socket.io-client';
 
-const PostedAnswers = () => {
+const PostedSolutions = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { question } = location.state;
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [answers, setAnswers] = useState([]);
@@ -15,6 +15,7 @@ const PostedAnswers = () => {
   const userEmail = localStorage.getItem('email');
   const username = userEmail ? userEmail.split('@')[0] : 'Anonymous';
   const socket = useRef(null);
+  const chatEndRef = useRef({});
 
   useEffect(() => {
     socket.current = io(`https://codebuddy-4-78bo.onrender.com`);
@@ -115,107 +116,196 @@ const PostedAnswers = () => {
       } catch (err) {
         console.error('Failed to send message:', err);
       }
+
+      setTimeout(() => {
+        chatEndRef.current[answerId]?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-pink-100 to-blue-100">
+    <div className="min-h-screen bg-[#0A0E12] text-gray-100">
       <Nav />
-      <div className="flex flex-col mt-24 items-center px-6">
-        <h2 className="text-3xl font-bold text-gray-700 mb-8 text-center">
-          Answers for: <span className="text-pink-500">{question.question}</span>
-        </h2>
+      
+      <div className="max-w-5xl mx-auto px-6 pt-24 pb-12">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-gray-400 hover:text-white mb-6 transition-colors"
+        >
+          <ArrowLeft size={18} />
+          <span className="text-sm">Back to Problems</span>
+        </button>
 
-        <div className="w-full max-w-5xl space-y-10">
-          {answers.length === 0 ? (
-            <div className="text-center text-gray-600 text-lg bg-white rounded-xl py-10 shadow border border-gray-200">
-              🚫 No answers found for this question yet.
-            </div>
-          ) : (
-            answers.map((ans, index) => (
-              <div key={ans._id} className="bg-white rounded-3xl shadow-md px-6 py-4 border border-gray-200">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="bg-pink-400 text-white w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow">
-                    {ans.author ? ans.author.charAt(0).toUpperCase() : 'U'}
+        {/* Question Header */}
+        <div className="bg-[#13171D] rounded-xl border border-white/10 p-6 mb-8">
+          <div className="flex items-center gap-2 mb-3">
+            {question.category && (
+              <span className="px-2 py-0.5 bg-blue-600/20 text-blue-400 rounded text-xs font-medium border border-blue-500/30">
+                {question.category}
+              </span>
+            )}
+          </div>
+          <h1 className="text-2xl font-bold text-white mb-2">{question.question}</h1>
+          {question.tagline && (
+            <p className="text-sm text-gray-500">#{question.tagline}</p>
+          )}
+        </div>
+
+        {/* Answers Count */}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-semibold text-white">
+            {answers.length} {answers.length === 1 ? 'Answer' : 'Answers'}
+          </h2>
+        </div>
+
+        {/* Answers List */}
+        {answers.length === 0 ? (
+          <div className="bg-[#13171D] rounded-xl border border-white/10 p-12 text-center">
+            <MessageCircle className="mx-auto text-gray-600 mb-4" size={48} />
+            <p className="text-gray-400 text-lg mb-2">No answers yet</p>
+            <p className="text-gray-600 text-sm">Be the first to answer this question!</p>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {answers.map((ans, index) => (
+              <div key={ans._id} className="bg-[#13171D] rounded-xl border border-white/10 overflow-hidden">
+                {/* Answer Header */}
+                <div className="p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full bg-blue-600/20 border border-blue-500/30 flex items-center justify-center">
+                      <User size={20} className="text-blue-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-white">
+                        {ans.author || 'Anonymous'}
+                      </h3>
+                      <p className="text-xs text-gray-500">Solution #{index + 1}</p>
+                    </div>
                   </div>
-                  <h3 className="text-md font-semibold text-gray-800">
-                    {ans.author || 'User'}'s Answer {index + 1}
-                  </h3>
-                </div>
 
-                <div className="flex justify-between items-center mb-3">
-                  <p className="text-gray-500 text-sm">Click to {expandedIndex === index ? 'hide' : 'view'} this answer</p>
+                  {/* Rating */}
+                  <div className="mb-4">
+                    <p className="text-xs text-gray-500 mb-2">Rate this answer:</p>
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          className={`cursor-pointer transition-all ${
+                            star <= (ans.rating || 0) 
+                              ? 'text-yellow-400 fill-yellow-400' 
+                              : 'text-gray-600 hover:text-gray-500'
+                          }`}
+                          size={20}
+                          onClick={() => handleRating(ans._id, star)}
+                        />
+                      ))}
+                      {ans.rating > 0 && (
+                        <span className="ml-2 text-sm text-gray-500">
+                          {ans.rating.toFixed(1)}/5
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Toggle Answer Button */}
                   <button
                     onClick={() => toggleExpand(index)}
-                    className="text-pink-600 hover:underline text-sm"
+                    className="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors"
                   >
-                    {expandedIndex === index ? 'Hide Answer ▲' : 'Show Answer ▼'}
+                    {expandedIndex === index ? (
+                      <>
+                        <ChevronUp size={16} />
+                        <span>Hide Answer</span>
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown size={16} />
+                        <span>View Answer</span>
+                      </>
+                    )}
                   </button>
                 </div>
 
+                {/* Expanded Answer Content */}
                 {expandedIndex === index && (
-                  <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-800 whitespace-pre-wrap mb-4 border border-gray-200 shadow-inner">
-                    {ans.answer}
+                  <div className="border-t border-white/10">
+                    {/* Answer Text */}
+                    <div className="p-6 bg-[#0A0E12]">
+                      <pre className="text-sm text-gray-300 whitespace-pre-wrap font-mono leading-relaxed">
+                        {ans.answer}
+                      </pre>
+                    </div>
+
+                    {/* Chat Section */}
+                    <div className="p-6 border-t border-white/10">
+                      <div className="flex items-center gap-2 mb-4">
+                        <MessageCircle size={18} className="text-gray-500" />
+                        <h4 className="text-sm font-semibold text-gray-400">
+                          Discussion ({(chatMessages[ans._id] || []).length})
+                        </h4>
+                      </div>
+
+                      {/* Chat Messages */}
+                      <div className="bg-[#0A0E12] rounded-lg border border-white/10 p-4 h-64 overflow-y-auto mb-4 space-y-3">
+                        {(chatMessages[ans._id] || []).length === 0 ? (
+                          <p className="text-center text-gray-600 text-sm mt-8">
+                            No messages yet. Start the discussion!
+                          </p>
+                        ) : (
+                          (chatMessages[ans._id] || []).map((msg, idx) => (
+                            <div
+                              key={idx}
+                              className={`flex ${msg.sender === username ? 'justify-end' : 'justify-start'}`}
+                            >
+                              <div
+                                className={`max-w-[75%] rounded-lg px-4 py-2 ${
+                                  msg.sender === username
+                                    ? 'bg-blue-600 text-white'
+                                    : 'bg-[#13171D] text-gray-200 border border-white/10'
+                                }`}
+                              >
+                                <p className="text-xs font-semibold mb-1 opacity-80">
+                                  {msg.sender}
+                                </p>
+                                <p className="text-sm">{msg.text}</p>
+                              </div>
+                            </div>
+                          ))
+                        )}
+                        <div ref={(el) => chatEndRef.current[ans._id] = el} />
+                      </div>
+
+                      {/* Chat Input */}
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={inputMessages[ans._id] || ''}
+                          onChange={(e) =>
+                            setInputMessages(prev => ({ ...prev, [ans._id]: e.target.value }))
+                          }
+                          onKeyDown={(e) => e.key === 'Enter' && sendMessage(ans._id)}
+                          placeholder="Ask a doubt or discuss..."
+                          className="flex-1 px-4 py-2 bg-[#0A0E12] border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm text-gray-100 placeholder-gray-600"
+                        />
+                        <button
+                          onClick={() => sendMessage(ans._id)}
+                          disabled={!inputMessages[ans._id]?.trim()}
+                          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-800 disabled:text-gray-600 text-white rounded-lg transition-colors flex items-center gap-2"
+                        >
+                          <Send size={16} />
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )}
-
-                <div className="mb-4">
-                  <p className="text-sm text-gray-600 mb-1">Rate this answer:</p>
-                  <div className="flex gap-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <FaStar
-                        key={star}
-                        className={`cursor-pointer text-lg transition ${
-                          star <= (ans.rating || 0) ? 'text-yellow-400' : 'text-gray-300'
-                        }`}
-                        onClick={() => handleRating(ans._id, star)}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="text-md font-semibold text-gray-700 mb-2">Doubt Discussion</h4>
-                  <div className="bg-pink-50 rounded-lg p-3 h-56 overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-pink-300">
-                    {(chatMessages[ans._id] || []).map((msg, idx) => (
-                      <div
-                        key={idx}
-                        className={`flex ${msg.sender === username ? 'justify-end' : 'justify-start'}`}
-                      >
-                        <div className={`px-4 py-2 rounded-xl text-white text-sm max-w-[75%] ${
-                          msg.sender === username ? 'bg-pink-500' : 'bg-pink-300'
-                        }`}>
-                          <strong>{msg.sender}:</strong> {msg.text}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex items-center mt-3 gap-2">
-                    <input
-                      type="text"
-                      value={inputMessages[ans._id] || ''}
-                      onChange={(e) =>
-                        setInputMessages(prev => ({ ...prev, [ans._id]: e.target.value }))
-                      }
-                      onKeyDown={(e) => e.key === 'Enter' && sendMessage(ans._id)}
-                      placeholder="Ask a doubt..."
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none"
-                    />
-                    <button
-                      onClick={() => sendMessage(ans._id)}
-                      className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full text-sm transition"
-                    >
-                      Send
-                    </button>
-                  </div>
-                </div>
               </div>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default PostedAnswers;
+export default PostedSolutions;

@@ -20,6 +20,7 @@
     "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.14.1",
+    "node-fetch": "^2.7.0",
     "nodemon": "^3.1.10",
     "socket.io": "^4.8.1"
   }

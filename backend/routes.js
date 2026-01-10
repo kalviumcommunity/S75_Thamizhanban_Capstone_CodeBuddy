@@ -7,64 +7,7 @@ const jwt = require('jsonwebtoken');
 const authMiddleware = require('./middleware/auth');
 require('dotenv').config();
 const ChatMessage = require('./model/chat');
-const fetch = require('node-fetch');
 
-
-router.post("/ask", async (req, res) => {
-  try {
-    const { prompt } = req.body;
-
-    if (!prompt) {
-      return res.status(400).json({ error: "Prompt is required" });
-    }
-
-    // UPDATED: Changed model to gemini-2.5-flash (or use gemini-1.5-flash)
-    const model = "gemini-2.5-flash"; 
-    const url = `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`;
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            role: "user",
-            parts: [
-              {
-                text: `You are a helpful coding assistant for CodeBuddy.
-Give clear, concise explanations.
-Include code examples when relevant.
-Format code using markdown.
-
-Question: ${prompt}`,
-              },
-            ],
-          },
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      const errData = await response.json();
-      console.error("API Error Detail:", errData);
-      throw new Error(errData.error?.message || "Failed to fetch from Gemini");
-    }
-
-    const data = await response.json();
-    
-    // Safety check for candidates
-    const reply =
-      data.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "No response from AI.";
-
-    res.json({ reply });
-  } catch (error) {
-    console.error("Gemini Error:", error.message);
-    res.status(500).json({ error: "AI service failed", details: error.message });
-  }
-});
 
 
 

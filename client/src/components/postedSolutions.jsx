@@ -18,11 +18,11 @@ const PostedSolutions = () => {
   const chatEndRef = useRef({});
 
   useEffect(() => {
-    socket.current = io(`https://codebuddy-4-78bo.onrender.com`);
+    socket.current = io(`https://s75-thamizhanban-capstone-codebuddy.onrender.com`);
 
     const fetchAnswers = async () => {
       try {
-        const res = await fetch(`https://codebuddy-4-78bo.onrender.com/api/allAnswers/${question._id}`);
+        const res = await fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/allAnswers/${question._id}`);
         const data = await res.json();
         setAnswers(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -49,7 +49,7 @@ const PostedSolutions = () => {
 
   const fetchChatMessages = async (answerId) => {
     try {
-      const res = await fetch(`https://codebuddy-4-78bo.onrender.com/api/chat/${answerId}`);
+      const res = await fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/chat/${answerId}`);
       const data = await res.json();
       setChatMessages(prev => ({ ...prev, [answerId]: data }));
     } catch (err) {
@@ -59,7 +59,7 @@ const PostedSolutions = () => {
 
   const handleRating = async (answerId, ratingValue) => {
     try {
-      await fetch(`https://codebuddy-4-78bo.onrender.com/api/rate/${answerId}`, {
+      await fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/rate/${answerId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rating: ratingValue })
@@ -108,7 +108,7 @@ const PostedSolutions = () => {
       }));
 
       try {
-        await fetch(`https://codebuddy-4-78bo.onrender.com/api/chat`, {
+        await fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newMessage)

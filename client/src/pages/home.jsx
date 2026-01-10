@@ -18,18 +18,18 @@ const Home = () => {
   const token = localStorage.getItem('token') || 'demo-token';
 
 const categories =[
-                    { name: 'Python',icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'  },
-                    { name: 'Java', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg' },
-                    { name: 'DSA', icon: '🧠' },
-                    { name: 'C++', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg' },
-                    { name: 'JavaScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg' },
-                    { name: 'SQL', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg' },
-                    { name: 'Others', icon: '✨' }
+                      { name: 'Python',icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'  },
+                      { name: 'Java', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg' },
+                      { name: 'DSA', icon: '🧠' },
+                      { name: 'C++', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg' },
+                      { name: 'JavaScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg' },
+                      { name: 'SQL', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg' },
+                      { name: 'Others', icon: '✨' }
                   ]
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`https://codebuddy-4-78bo.onrender.com/api/postedQuestions`, {
+      const response = await fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/postedQuestions`, {
         method: 'GET',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -49,7 +49,7 @@ const categories =[
     }
 
     try {
-      const response = await fetch(`https://codebuddy-4-78bo.onrender.com/api/postQuestion`, {
+      const response = await fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/postQuestion`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,49 +74,52 @@ const categories =[
     }
   };
 
-  const handleAIChat = async () => {
-    if (!aiInput.trim()) return;
+ const handleAIChat = async () => {
+  if (!aiInput.trim()) return;
 
-    const userMessage = { role: 'user', content: aiInput };
-    setAiMessages(prev => [...prev, userMessage]);
-    setAiInput('');
-    setIsAiLoading(true);
+  setIsAiLoading(true);
 
-    try {
-      // Call Claude API through Anthropic endpoint
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [
-            { 
-              role: 'user', 
-              content: `You are a helpful coding assistant for CodeBuddy. Provide clear, concise answers with code examples when relevant. Format code in markdown blocks. Question: ${aiInput}` 
-            }
-          ],
-        })
-      });
-
-      const data = await response.json();
-      const assistantMessage = {
-        role: 'assistant',
-        content: data.content[0].text
-      };
-      setAiMessages(prev => [...prev, assistantMessage]);
-    } catch (err) {
-      console.error('AI Error:', err);
-      setAiMessages(prev => [...prev, {
-        role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.'
-      }]);
-    } finally {
-      setIsAiLoading(false);
-    }
+  const userMessage = {
+    role: "user",
+    content: aiInput,
   };
+
+  setAiMessages((prev) => [...prev, userMessage]);
+  setAiInput("");
+
+  try {
+    const response = await fetch(
+      `https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/ask`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt: aiInput }),
+      }
+    );
+
+    const data = await response.json();
+
+    const assistantMessage = {
+      role: "assistant",
+      content: data.reply,
+    };
+
+    setAiMessages((prev) => [...prev, assistantMessage]);
+  } catch (err) {
+    console.error("AI Error:", err);
+    setAiMessages((prev) => [
+      ...prev,
+      {
+        role: "assistant",
+        content: "Sorry, something went wrong. Please try again.",
+      },
+    ]);
+  } finally {
+    setIsAiLoading(false);
+  }
+};
 
   const copyCode = (code, index) => {
     navigator.clipboard.writeText(code);

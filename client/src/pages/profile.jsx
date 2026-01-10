@@ -19,10 +19,10 @@ const Profile = () => {
     const fetchData = async () => {
       try {
         const [qRes, aRes] = await Promise.all([
-          fetch(`https://codebuddy-4-78bo.onrender.com/api/myQuestions`, {
+          fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/myQuestions`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          fetch(`https://codebuddy-4-78bo.onrender.com/api/myAnswers`, {
+          fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/myAnswers`, {
             headers: { Authorization: `Bearer ${token}` }
           })
         ]);

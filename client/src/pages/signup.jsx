@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`https://codebuddy-4-78bo.onrender.com/api/signup`, {
+      const response = await fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

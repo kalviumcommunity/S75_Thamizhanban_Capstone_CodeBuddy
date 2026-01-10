@@ -22,7 +22,7 @@ const Problems = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`https://codebuddy-4-78bo.onrender.com/api/allQuestions`, {
+      const response = await fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.comm/api/allQuestions`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,

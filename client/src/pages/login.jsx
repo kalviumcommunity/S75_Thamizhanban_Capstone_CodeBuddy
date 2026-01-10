@@ -28,7 +28,7 @@ const Login = () => {
         e.preventDefault();
 
         try{
-            const response = await fetch('https://codebuddy-4-78bo.onrender.com/api/login',{
+            const response = await fetch('https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/login',{
                 method:"POST",
                 headers:{"Content-Type":"application/json"},
                 body:JSON.stringify({email,password})

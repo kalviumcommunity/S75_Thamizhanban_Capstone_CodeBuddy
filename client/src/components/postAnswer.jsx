@@ -22,7 +22,7 @@ const PostAnswer = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`https://codebuddy-4-78bo.onrender.com/api/postAnswer`, {
+      const response = await fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/postAnswer`, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",

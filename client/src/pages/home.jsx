@@ -89,7 +89,7 @@ const categories =[
 
   try {
     const response = await fetch(
-      `https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/ask`,
+      `https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/ai/ask`,
       {
         method: "POST",
         headers: {

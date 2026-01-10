@@ -41,6 +41,7 @@ mongoose.connect(uri)
 
 app.use(express.json());
 app.use('/api', routes);
+app.use('/api/ai', require('./chatbot'));
 
 app.get('/', (req, res) => res.send('Hi guys!'));
 

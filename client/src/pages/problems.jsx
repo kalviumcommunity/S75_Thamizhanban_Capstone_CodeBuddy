@@ -7,7 +7,6 @@ const Problems = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [searchText, setSearchText] = useState('');
   const [questions, setQuestions] = useState([]);
-  const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
   const categories = [
@@ -24,9 +23,7 @@ const Problems = () => {
     try {
       const response = await fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/allQuestions`, {
         method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: 'include'
       });
       if (response.ok) {
         const data = await response.json();

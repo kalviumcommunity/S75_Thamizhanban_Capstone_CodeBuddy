@@ -23,10 +23,10 @@ const Profile = () => {
 
       try {
         const [qRes, aRes] = await Promise.all([
-          fetch(`http://localhost:3000/api/myQuestions`, {
+          fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/myQuestions`, {
             credentials: 'include'
           }),
-          fetch(`http://localhost:3000/api/myAnswers`, {
+          fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/myAnswers`, {
             credentials: 'include'
           })
         ]);

@@ -6,7 +6,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const BASE_URL = 'http://localhost:3000/api';
+    const BASE_URL = 'https://s75-thamizhanban-capstone-codebuddy.onrender.com/api';
 
     useEffect(() => {
         verifyAuth();

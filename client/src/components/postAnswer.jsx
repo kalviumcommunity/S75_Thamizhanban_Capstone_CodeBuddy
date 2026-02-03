@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import Nav from './nav';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Send, FileText, ArrowLeft, Lightbulb, Sparkles } from 'lucide-react';
@@ -8,12 +9,17 @@ const PostAnswer = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const question = location.state?.question;
-  const token = localStorage.getItem('token');
 
   const postAnswer = async (e) => {
     e.preventDefault();
-    
+
+    if (!user) {
+      alert("Please login to post an answer!");
+      return;
+    }
+
     if (!Answer.trim()) {
       alert('Please write an answer before submitting!');
       return;
@@ -26,11 +32,11 @@ const PostAnswer = () => {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
         },
+        credentials: 'include',
         body: JSON.stringify({
           answer: Answer,
-          question: question._id 
+          question: question._id
         })
       });
 
@@ -53,13 +59,13 @@ const PostAnswer = () => {
 
   return (
     <div className="min-h-screen bg-[#0A0E12] text-gray-100 font-sans relative overflow-hidden">
-      
+
       {/* --- BACKGROUND ANIMATION LAYER (Matched to Home) --- */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
-        
+
         {/* Floating Elements */}
         <div className="absolute top-32 right-20 text-blue-500/5 font-mono text-sm animate-float">
           {'return solution;'}
@@ -78,14 +84,14 @@ const PostAnswer = () => {
         </header>
 
         <div className="max-w-4xl mx-auto px-6 py-12">
-          
+
           {/* Back Button */}
           <button
             onClick={() => navigate(-1)}
             className="group flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors"
           >
             <div className="p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors">
-               <ArrowLeft size={18} />
+              <ArrowLeft size={18} />
             </div>
             <span className="text-sm font-medium">Back to Problems</span>
           </button>
@@ -101,10 +107,10 @@ const PostAnswer = () => {
                 <FileText className="text-blue-500" size={32} />
               </div>
               <div>
-                 <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-                   Share Your Solution
-                 </h1>
-                 <p className="text-gray-400 text-sm mt-1">Help the community by posting your approach</p>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                  Share Your Solution
+                </h1>
+                <p className="text-gray-400 text-sm mt-1">Help the community by posting your approach</p>
               </div>
             </div>
 
@@ -123,8 +129,8 @@ const PostAnswer = () => {
               </p>
               {question?.tagline && (
                 <div className="flex items-center gap-2 mt-3">
-                   <Sparkles size={14} className="text-purple-400" />
-                   <p className="text-sm text-purple-400/80 font-medium">{question.tagline}</p>
+                  <Sparkles size={14} className="text-purple-400" />
+                  <p className="text-sm text-purple-400/80 font-medium">{question.tagline}</p>
                 </div>
               )}
             </div>
@@ -133,14 +139,14 @@ const PostAnswer = () => {
             <form onSubmit={postAnswer} className="relative z-10">
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-3">
-                    <label className="block text-sm font-medium text-gray-300">
+                  <label className="block text-sm font-medium text-gray-300">
                     Your Solution
-                    </label>
-                    <span className="text-xs text-gray-500 font-mono">
+                  </label>
+                  <span className="text-xs text-gray-500 font-mono">
                     {Answer.length} chars
-                    </span>
+                  </span>
                 </div>
-                
+
                 <textarea
                   placeholder="Provide a detailed solution... Include code examples, explanations, and any helpful resources."
                   className="w-full h-80 px-5 py-4 bg-[#0A0E12]/50 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-gray-200 placeholder-gray-600 resize-none font-mono text-sm transition-all hover:bg-[#0A0E12]/70"
@@ -148,7 +154,7 @@ const PostAnswer = () => {
                   onChange={(e) => setAnswer(e.target.value)}
                   disabled={isSubmitting}
                 ></textarea>
-                
+
                 <div className="flex items-center justify-between mt-3 text-xs text-gray-500 px-1">
                   <p>Supports Markdown-style formatting</p>
                 </div>
@@ -188,23 +194,23 @@ const PostAnswer = () => {
           {/* Tips Section */}
           <div className="mt-8 bg-[#13171D]/60 backdrop-blur-md rounded-xl border border-white/5 p-6 animate-in slide-in-from-bottom-5 duration-700">
             <div className="flex items-center gap-3 mb-4">
-               <Lightbulb className="text-yellow-500" size={20} />
-               <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
-               Tips for a Great Answer
-               </h3>
+              <Lightbulb className="text-yellow-500" size={20} />
+              <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
+                Tips for a Great Answer
+              </h3>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
-               {[
-                  "Break down complex solutions into clear, digestible steps.",
-                  "Include code snippets with proper indentation and comments.",
-                  "Explain the time and space complexity of your solution.",
-                  "Mention any edge cases you considered."
-               ].map((tip, idx) => (
-                  <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-[#0A0E12]/30 border border-white/5">
-                     <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 shrink-0"></div>
-                     <span className="text-sm text-gray-400 leading-relaxed">{tip}</span>
-                  </div>
-               ))}
+              {[
+                "Break down complex solutions into clear, digestible steps.",
+                "Include code snippets with proper indentation and comments.",
+                "Explain the time and space complexity of your solution.",
+                "Mention any edge cases you considered."
+              ].map((tip, idx) => (
+                <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-[#0A0E12]/30 border border-white/5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 shrink-0"></div>
+                  <span className="text-sm text-gray-400 leading-relaxed">{tip}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>

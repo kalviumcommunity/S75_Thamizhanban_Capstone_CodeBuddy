@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 // Added new icons: Zap, Users, Trophy, TrendingUp, Activity
 import { MessageSquare, Code2, Sparkles, ChevronRight, Bot, X, Send, Copy, Check, Zap, Users, Trophy, TrendingUp, Activity } from 'lucide-react';
 // Nav handled by Layout
 
 const Home = () => {
+  const { user } = useAuth();
   const [questions, setQuestions] = useState([]);
   const [questionText, setQuestionText] = useState('');
   const [tagline, setTagline] = useState('');
@@ -14,9 +16,6 @@ const Home = () => {
   const [aiInput, setAiInput] = useState('');
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [copiedCode, setCopiedCode] = useState(null);
-
-  // Mock token for demo - replace with actual auth
-  const token = localStorage.getItem('token') || 'demo-token';
 
   const categories = [
     { name: 'Python', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg' },
@@ -32,7 +31,7 @@ const Home = () => {
     try {
       const response = await fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/postedQuestions`, {
         method: 'GET',
-        headers: { Authorization: `Bearer ${token}` }
+        credentials: 'include'
       });
       if (response.ok) {
         const data = await response.json();
@@ -44,6 +43,10 @@ const Home = () => {
   };
 
   const handlePost = async () => {
+    if (!user) {
+      alert("Please login to post a question");
+      return;
+    }
     if (!selectedCategory || !questionText.trim() || !tagline.trim()) {
       alert("Please select a category and fill out both question and tagline!");
       return;
@@ -54,8 +57,8 @@ const Home = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
+        credentials: 'include',
         body: JSON.stringify({
           question: questionText,
           tagline: tagline,
@@ -69,6 +72,9 @@ const Home = () => {
         fetchData();
         setShowQuestionInput(false);
         setSelectedCategory('');
+      } else {
+        const data = await response.json();
+        alert(data.message || "Failed to post question");
       }
     } catch (err) {
       console.error('Failed to post question:', err);
@@ -216,8 +222,8 @@ const Home = () => {
                         setShowQuestionInput(true);
                       }}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${selectedCategory === cat.name
-                          ? 'bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-l-2 border-blue-500/50 text-white'
-                          : 'hover:bg-white/5 text-gray-400 hover:text-white'
+                        ? 'bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-l-2 border-blue-500/50 text-white'
+                        : 'hover:bg-white/5 text-gray-400 hover:text-white'
                         }`}
                     >
                       {cat.icon.startsWith('http') ? (
@@ -453,8 +459,8 @@ const Home = () => {
                     )}
                     <div
                       className={`max-w-[80%] rounded-lg p-4 ${msg.role === 'user'
-                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                          : 'bg-[#0A0E12]/80 border border-white/10'
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
+                        : 'bg-[#0A0E12]/80 border border-white/10'
                         }`}
                     >
                       {msg.role === 'user' ? (

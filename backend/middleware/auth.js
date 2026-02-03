@@ -2,16 +2,17 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const authMiddleware = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    console.log("Auth Header:", req.headers.authorization);
+    // Check for token in cookies first, then header (for backward compatibility during dev if needed)
+    let token = req.cookies.token;
 
+    // Optional: Fallback to header if you want to support both
+    // if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    //    token = req.headers.authorization.split(' ')[1];
+    // }
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(400).json({ message: 'Authorization header missing or malformed' });
+    if (!token) {
+        return res.status(401).json({ message: 'Authorization denied. No token provided.' });
     }
-
-    const token = authHeader.split(' ')[1];
-    console.log("Token in frontend:", token);
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);

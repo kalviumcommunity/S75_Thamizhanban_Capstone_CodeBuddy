@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Nav from './nav';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Send, FileText, ArrowLeft } from 'lucide-react';
+import { Send, FileText, ArrowLeft, Lightbulb, Sparkles } from 'lucide-react';
 
 const PostAnswer = () => {
   const [Answer, setAnswer] = useState('');
@@ -52,124 +52,174 @@ const PostAnswer = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0E12] text-gray-100">
-      <Nav />
+    <div className="min-h-screen bg-[#0A0E12] text-gray-100 font-sans relative overflow-hidden">
+      
+      {/* --- BACKGROUND ANIMATION LAYER (Matched to Home) --- */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
+        
+        {/* Floating Elements */}
+        <div className="absolute top-32 right-20 text-blue-500/5 font-mono text-sm animate-float">
+          {'return solution;'}
+        </div>
+        <div className="absolute bottom-20 left-20 text-purple-500/5 font-mono text-sm animate-float" style={{ animationDelay: '2s' }}>
+          {'export default Answer;'}
+        </div>
+      </div>
 
-      <div className="max-w-4xl mx-auto px-6 pt-24 pb-12">
-        {/* Back Button */}
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-400 hover:text-white mb-6 transition-colors"
-        >
-          <ArrowLeft size={18} />
-          <span className="text-sm">Back to Problems</span>
-        </button>
-
-        {/* Main Card */}
-        <div className="bg-[#13171D] rounded-xl border border-white/10 p-8">
-          {/* Header */}
-          <div className="flex items-center gap-3 mb-6">
-            <FileText className="text-blue-500" size={28} />
-            <h1 className="text-3xl font-bold text-white">Share Your Solution</h1>
+      {/* --- MAIN CONTENT --- */}
+      <div className="relative z-10">
+        <header className="sticky top-0 z-40 bg-[#0F1115]/80 backdrop-blur-md border-b border-white/10">
+          <div className="mx-auto max-w-screen-2xl flex items-center justify-between px-6 py-4">
+            <Nav />
           </div>
+        </header>
 
-          {/* Question Display */}
-          <div className="bg-[#0A0E12] rounded-lg border border-white/10 p-6 mb-8">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Question</span>
-              {question?.category && (
-                <span className="px-2 py-0.5 bg-blue-600/20 text-blue-400 rounded text-xs font-medium border border-blue-500/30">
-                  {question.category}
-                </span>
-              )}
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          
+          {/* Back Button */}
+          <button
+            onClick={() => navigate(-1)}
+            className="group flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors"
+          >
+            <div className="p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors">
+               <ArrowLeft size={18} />
             </div>
-            <p className="text-xl font-medium text-gray-200 leading-relaxed">
-              {question?.question || 'No question provided'}
-            </p>
-            {question?.tagline && (
-              <p className="text-sm text-gray-500 mt-2">#{question.tagline}</p>
-            )}
-          </div>
+            <span className="text-sm font-medium">Back to Problems</span>
+          </button>
 
-          {/* Answer Form */}
-          <form onSubmit={postAnswer}>
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-400 mb-3">
-                Your Answer
-              </label>
-              <textarea
-                placeholder="Provide a detailed solution... Include code examples, explanations, and any helpful resources."
-                className="w-full h-80 px-4 py-3 bg-[#0A0E12] border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100 placeholder-gray-600 resize-none font-mono text-sm"
-                value={Answer}
-                onChange={(e) => setAnswer(e.target.value)}
-                disabled={isSubmitting}
-              ></textarea>
-              <div className="flex items-center justify-between mt-2">
-                <p className="text-xs text-gray-600">
-                  Tip: Use clear formatting and include code examples where applicable
-                </p>
-                <span className="text-xs text-gray-600">
-                  {Answer.length} characters
-                </span>
+          {/* Main Form Card */}
+          <div className="bg-[#13171D]/80 backdrop-blur-xl rounded-xl border border-white/10 p-8 shadow-2xl relative overflow-hidden">
+            {/* Subtle glow effect inside card */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+            {/* Header */}
+            <div className="flex items-center gap-4 mb-8 relative z-10">
+              <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20">
+                <FileText className="text-blue-500" size={32} />
+              </div>
+              <div>
+                 <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                   Share Your Solution
+                 </h1>
+                 <p className="text-gray-400 text-sm mt-1">Help the community by posting your approach</p>
               </div>
             </div>
 
-            {/* Submit Button */}
-            <div className="flex items-center justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => navigate(-1)}
-                className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors font-medium"
-                disabled={isSubmitting}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting || !Answer.trim()}
-                className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-800 disabled:text-gray-600 text-white rounded-lg transition-colors font-medium"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    <span>Posting...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send size={18} />
-                    <span>Post Answer</span>
-                  </>
+            {/* Question Display */}
+            <div className="bg-[#0A0E12]/60 rounded-xl border border-white/10 p-6 mb-8 relative group hover:border-blue-500/30 transition-all">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Selected Question</span>
+                {question?.category && (
+                  <span className="px-2 py-0.5 bg-blue-600/20 text-blue-400 rounded text-xs font-medium border border-blue-500/30">
+                    {question.category}
+                  </span>
                 )}
-              </button>
+              </div>
+              <p className="text-xl font-medium text-gray-200 leading-relaxed">
+                {question?.question || 'No question provided'}
+              </p>
+              {question?.tagline && (
+                <div className="flex items-center gap-2 mt-3">
+                   <Sparkles size={14} className="text-purple-400" />
+                   <p className="text-sm text-purple-400/80 font-medium">{question.tagline}</p>
+                </div>
+              )}
             </div>
-          </form>
-        </div>
 
-        {/* Tips Section */}
-        <div className="mt-8 bg-[#13171D] rounded-xl border border-white/10 p-6">
-          <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-4">
-            Tips for a Great Answer
-          </h3>
-          <ul className="space-y-2 text-sm text-gray-400">
-            <li className="flex items-start gap-2">
-              <span className="text-blue-500 mt-1">•</span>
-              <span>Break down complex solutions into clear, digestible steps</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-blue-500 mt-1">•</span>
-              <span>Include code snippets with proper formatting</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-blue-500 mt-1">•</span>
-              <span>Explain the logic and reasoning behind your approach</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-blue-500 mt-1">•</span>
-              <span>Consider edge cases and alternative solutions</span>
-            </li>
-          </ul>
+            {/* Answer Form */}
+            <form onSubmit={postAnswer} className="relative z-10">
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-3">
+                    <label className="block text-sm font-medium text-gray-300">
+                    Your Solution
+                    </label>
+                    <span className="text-xs text-gray-500 font-mono">
+                    {Answer.length} chars
+                    </span>
+                </div>
+                
+                <textarea
+                  placeholder="Provide a detailed solution... Include code examples, explanations, and any helpful resources."
+                  className="w-full h-80 px-5 py-4 bg-[#0A0E12]/50 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-gray-200 placeholder-gray-600 resize-none font-mono text-sm transition-all hover:bg-[#0A0E12]/70"
+                  value={Answer}
+                  onChange={(e) => setAnswer(e.target.value)}
+                  disabled={isSubmitting}
+                ></textarea>
+                
+                <div className="flex items-center justify-between mt-3 text-xs text-gray-500 px-1">
+                  <p>Supports Markdown-style formatting</p>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-end gap-4">
+                <button
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  className="px-6 py-3 text-gray-400 hover:text-white font-medium transition-colors"
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !Answer.trim()}
+                  className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-800 disabled:to-gray-800 disabled:text-gray-600 rounded-lg text-white font-medium transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transform hover:-translate-y-0.5"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      <span>Posting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={18} />
+                      <span>Post Answer</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {/* Tips Section */}
+          <div className="mt-8 bg-[#13171D]/60 backdrop-blur-md rounded-xl border border-white/5 p-6 animate-in slide-in-from-bottom-5 duration-700">
+            <div className="flex items-center gap-3 mb-4">
+               <Lightbulb className="text-yellow-500" size={20} />
+               <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
+               Tips for a Great Answer
+               </h3>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">
+               {[
+                  "Break down complex solutions into clear, digestible steps.",
+                  "Include code snippets with proper indentation and comments.",
+                  "Explain the time and space complexity of your solution.",
+                  "Mention any edge cases you considered."
+               ].map((tip, idx) => (
+                  <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-[#0A0E12]/30 border border-white/5">
+                     <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 shrink-0"></div>
+                     <span className="text-sm text-gray-400 leading-relaxed">{tip}</span>
+                  </div>
+               ))}
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Animation Styles */}
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 };

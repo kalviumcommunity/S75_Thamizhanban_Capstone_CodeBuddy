@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import Nav from '../components/nav';
+import { useAuth } from '../context/AuthContext';
+// Nav handled by Layout
 import { User, MessageSquare, CheckCircle, Star, Award, TrendingUp } from 'lucide-react';
 
 const Profile = () => {
+  const { user } = useAuth();
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [stats, setStats] = useState({
@@ -11,36 +13,43 @@ const Profile = () => {
     avgRating: 0,
     bestRating: 0
   });
-  const email = localStorage.getItem('email');
-  const token = localStorage.getItem('token');
+
+  const email = user?.email;
   const username = email ? email.split('@')[0] : 'User';
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!user) return;
+
       try {
         const [qRes, aRes] = await Promise.all([
-          fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/myQuestions`, {
-            headers: { Authorization: `Bearer ${token}` }
+          fetch(`http://localhost:3000/api/myQuestions`, {
+            credentials: 'include'
           }),
-          fetch(`https://s75-thamizhanban-capstone-codebuddy.onrender.com/api/myAnswers`, {
-            headers: { Authorization: `Bearer ${token}` }
+          fetch(`http://localhost:3000/api/myAnswers`, {
+            credentials: 'include'
           })
         ]);
-        
-        const [qData, aData] = await Promise.all([qRes.json(), aRes.json()]);
-        setQuestions(qData);
-        setAnswers(aData);
+
+        const qData = await qRes.json();
+        const aData = await aRes.json();
+
+        const safeQData = Array.isArray(qData) ? qData : [];
+        const safeAData = Array.isArray(aData) ? aData : [];
+
+        setQuestions(safeQData);
+        setAnswers(safeAData);
 
         // Calculate stats
-        const totalAnswers = aData.length;
-        const ratings = aData.map(a => a.rating || 0).filter(r => r > 0);
-        const avgRating = ratings.length > 0 
-          ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length 
+        const totalAnswers = safeAData.length;
+        const ratings = safeAData.map(a => a.rating || 0).filter(r => r > 0);
+        const avgRating = ratings.length > 0
+          ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length
           : 0;
         const bestRating = ratings.length > 0 ? Math.max(...ratings) : 0;
 
         setStats({
-          totalQuestions: qData.length,
+          totalQuestions: safeQData.length,
           totalAnswers,
           avgRating: avgRating.toFixed(1),
           bestRating: bestRating.toFixed(1)
@@ -51,13 +60,11 @@ const Profile = () => {
     };
 
     fetchData();
-  }, []);
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-[#0A0E12] text-gray-100">
-      <Nav />
-      
-      <div className="max-w-6xl mx-auto px-6 pt-24 pb-12">
+      <div className="max-w-6xl mx-auto pt-8 pb-12">
         {/* Profile Header */}
         <div className="bg-[#13171D] rounded-xl border border-white/10 p-8 mb-8">
           <div className="flex items-center gap-6">
@@ -189,9 +196,9 @@ const Profile = () => {
                         )}
                       </div>
                       <div className="flex items-center gap-1">
-                        <Star 
-                          className={`${a.rating > 0 ? 'text-yellow-400 fill-yellow-400' : 'text-gray-600'}`} 
-                          size={14} 
+                        <Star
+                          className={`${a.rating > 0 ? 'text-yellow-400 fill-yellow-400' : 'text-gray-600'}`}
+                          size={14}
                         />
                         <span className="text-xs text-gray-500">
                           {a.rating?.toFixed(1) || '0.0'}/5

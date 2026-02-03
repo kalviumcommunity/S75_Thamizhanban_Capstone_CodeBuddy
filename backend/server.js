@@ -4,7 +4,11 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
-const routes = require('./routes');
+const cookieParser = require('cookie-parser');
+const authRoutes = require('./routes/authRoutes');
+const questionRoutes = require('./routes/questionRoutes');
+const answerRoutes = require('./routes/answerRoutes');
+const chatRoutes = require('./routes/chatRoutes');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -20,7 +24,7 @@ app.use(cors({
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '*', 
+    origin: '*',
     methods: ['GET', 'POST']
   }
 });
@@ -42,7 +46,12 @@ mongoose.connect(uri)
   .catch(err => console.error(err));
 
 app.use(express.json());
-app.use('/api', routes);
+app.use(cookieParser());
+
+app.use('/api', authRoutes);
+app.use('/api', questionRoutes);
+app.use('/api', answerRoutes);
+app.use('/api', chatRoutes);
 app.use('/api/ai', require('./chatbot'));
 
 app.get('/', (req, res) => res.send('Hi guys!'));
